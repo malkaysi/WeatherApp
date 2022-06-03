@@ -6,6 +6,13 @@ let buttonElement = document.getElementById('submitData');
 let showButton = document.getElementById('showData');
 let body = document.getElementById('body');
 
+let radioForm = document.createElement("form");
+radioForm.setAttribute('id', 'radioForm');
+
+let locationSelectionButton = document.createElement('button');
+locationSelectionButton.setAttribute('id', 'locationSelectionButton');
+locationSelectionButton.textContent = 'Select this location';
+
 let searchObj = {
   cityName,
   state,
@@ -53,11 +60,14 @@ const getGeoLocation = async () => {
       console.log(error)
     }
 
-    let i;
     if (geoLocationData.length > 1) {
+      body.appendChild(radioForm);
+      let i;
       for (i = 0; i < geoLocationData.length; i++) {
-        displayMultipleLocations(geoLocationData[i]);
+        displayMultipleLocations(geoLocationData[i], i);
       }
+
+      body.appendChild(locationSelectionButton)
     }
   }
 
@@ -84,25 +94,35 @@ const getWeather = async (geoLocationData) => {
 
 // Display results
 // If there are more than one location let's show them radio buttons of the city, country
-const displayMultipleLocations = (location) => {
-  const {name, country} = location;
-  console.log(location)
+const displayMultipleLocations = (locationData, selectedLocation) => {
+  const { name, country } = locationData;
+  console.log(locationData)
+
   let input = document.createElement("input");
   input.setAttribute('type', 'radio');
   input.setAttribute('id', `${name}`);
+  input.setAttribute('name', 'locationSelection')
+  input.setAttribute('value', `${selectedLocation}`);
 
   let label = document.createElement("label");
   label.setAttribute('type', 'radio');
   label.setAttribute('for', `${name}`)
   label.textContent = `${name}, ${country}`;
 
-  body.appendChild(input);
-  body.appendChild(label);
+  radioForm.appendChild(input);
+  radioForm.appendChild(label);
+}
+
+const getSelectedLocation = () => {
+  let selectedLocation = document.querySelector('input[name="locationSelection"]:checked').value;
+  getWeather(geoLocationData[selectedLocation])
+
 }
 
 // Allow users to submit their data
 buttonElement.addEventListener('click', storeSubmissionData);
 showButton.addEventListener('click', getGeoLocation);
+locationSelectionButton.addEventListener('click', getSelectedLocation);
 
 
 
