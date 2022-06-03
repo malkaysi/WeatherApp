@@ -4,7 +4,7 @@ import { apiid } from './env.js';
 
 let buttonElement = document.getElementById('submitData');
 let showButton = document.getElementById('showData');
-let body = document.getElementsByTagName('body');
+let body = document.getElementById('body');
 
 let searchObj = {
   cityName,
@@ -53,6 +53,7 @@ const getGeoLocation = async () => {
       console.log(error)
     }
 
+    let i;
     if (geoLocationData.length > 1) {
       for (i = 0; i < geoLocationData.length; i++) {
         displayMultipleLocations(geoLocationData[i]);
@@ -84,16 +85,19 @@ const getWeather = async (geoLocationData) => {
 // Display results
 // If there are more than one location let's show them radio buttons of the city, country
 const displayMultipleLocations = (location) => {
+  const {name, country} = location;
+  console.log(location)
   let input = document.createElement("input");
   input.setAttribute('type', 'radio');
-  input.setAttribute('id', `${location}`);
+  input.setAttribute('id', `${name}`);
 
   let label = document.createElement("label");
   label.setAttribute('type', 'radio');
-  label.setAttribute('for', `${location}`)
+  label.setAttribute('for', `${name}`)
+  label.textContent = `${name}, ${country}`;
 
-  body.append(input);
-  body.append(label);
+  body.appendChild(input);
+  body.appendChild(label);
 }
 
 // Allow users to submit their data
