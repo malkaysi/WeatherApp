@@ -3,7 +3,6 @@
 import { apiid } from './env.js';
 
 let buttonElement = document.getElementById('submitData');
-let showButton = document.getElementById('showData');
 let body = document.getElementById('body');
 
 let radioForm = document.createElement("form");
@@ -12,6 +11,9 @@ radioForm.setAttribute('id', 'radioForm');
 let locationSelectionButton = document.createElement('button');
 locationSelectionButton.setAttribute('id', 'locationSelectionButton');
 locationSelectionButton.textContent = 'Select this location';
+
+let displayParent = document.createElement('div');
+let temperatureDisplay = document.createElement('div');
 
 let searchObj = {
   cityName,
@@ -27,6 +29,8 @@ function storeSubmissionData() {
   searchObj.cityName = document.getElementById('cityName').value;
   searchObj.state = document.getElementById('state').value;
   searchObj.zipCode = document.getElementById('zipCode').value;
+
+  getGeoLocation();
 }
 
 // Get users current location
@@ -88,8 +92,7 @@ const getWeather = async (geoLocationData) => {
       console.log(error)
     }
   }
-
-  console.log(weatherData);
+  displayWeather();
 }
 
 // Display results
@@ -119,9 +122,22 @@ const getSelectedLocation = () => {
 
 }
 
+const displayWeather = () => {
+  console.log(weatherData);
+  let tempK = weatherData.main.temp;
+  let tempC = (tempK - 273.15).toFixed(0) + '\xB0' + 'C'
+  let tempF = (1.8*(tempK-273) + 32).toFixed(0) + '\xB0' + 'F'
+  console.log(tempC);
+  console.log(tempF);
+  body.appendChild(displayParent);
+  temperatureDisplay.textContent = tempF;
+
+  displayParent.appendChild(temperatureDisplay);
+
+}
+
 // Allow users to submit their data
 buttonElement.addEventListener('click', storeSubmissionData);
-showButton.addEventListener('click', getGeoLocation);
 locationSelectionButton.addEventListener('click', getSelectedLocation);
 
 
